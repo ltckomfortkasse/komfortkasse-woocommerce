@@ -4,6 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice
 Requires at least: 3.8
 Tested up to: 4.3
 License: CC BY-ND 4.0
+Stable tag: 1.0.2
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
