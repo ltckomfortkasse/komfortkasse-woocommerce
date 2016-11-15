@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 3.8
 Tested up to: 4.6
 License: CC BY-ND 4.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -30,3 +30,28 @@ Diese Erweiterung stellt die Schnittstelle zu Komfortkasse zur Verf&uuml;gung. I
 
 == Installation ==
 Installation Instructions: https://komfortkasse.eu/anleitungen/42-woocommerce#plugin
+
+
+
+== Changelog ==
+
+= 1.0 =
+Private beta
+
+= 1.0.1 =
+First public release
+
+= 1.0.2 =
+Added stable tag
+
+= 1.0.4 =
+Added tags
+
+= 1.0.6 =
+No changes
+
+= 1.0.7 =
+Added changelog
+
+
+
