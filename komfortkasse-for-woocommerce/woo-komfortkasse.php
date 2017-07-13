@@ -7,6 +7,7 @@
  * Author URI: http://komfortkasse.eu
  * License: CC BY-SA 4.0
  * License URI: http://creativecommons.org/licenses/by-sa/4.0/
+ * Text-Domain: woo-komfortkasse
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 

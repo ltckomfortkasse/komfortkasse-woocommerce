@@ -1,10 +1,10 @@
 === Komfortkasse for WooCommerce ===
 Contributors: komfortkasse
-Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway
+Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 3.8
 Tested up to: 4.6
 License: CC BY-ND 4.0
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -56,5 +56,7 @@ Added changelog
 = 1.1.0 =
 Recognizes invoice numbers from German Market plugin now
 
+= 1.2.0 = 
+Compatibility with WPML
 
 
