@@ -4,11 +4,11 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 3.8
 Tested up to: 4.8
 License: CC BY-ND 4.0
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
-Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
+Automatic assignment of bank wire transfers
 
 
 == Description ==
@@ -17,14 +17,6 @@ Komfortkasse retrieves bank transfers from a bank account and automatically assi
 In addition, automatic payment reminders can be sent and refunds can be performed directly.
 
 This extension provides the interface for the Komfortkasse online service, transferring information about open orders to Komfortkasse and retrieveing payment status updates from Komfortkasse. Registration on komfortkasse.eu is required (free package available). You even don\'t need a bank account, you can use Komfortkasse\'s omnibus account. This plugin is designed for SEPA countries. It also works if your company is outside SEPA, but serving customers in that area.
-
----
-
-Mit Komfortkasse werden Bank&uuml;berweisungen vom Bankkonto abgerufen und automatisch den offenen Bestellungen zugeordnet. Die Zuordnung erfolgt vollautomatisch im Hintergrund und ist fehlertolerant, d.h. es k&ouml;nnen auch Bestellungen zugeordnet werden wenn der Name nicht &uuml;bereinstimmt, die Bestellnummer nicht angegeben wurde oder der Betrag abweicht.
-
-Zus&auml;tzlich k&ouml;nnen automatische Zahlungserinnerungen versendet werden und R&uuml;ckbuchungen direkt, ohne Einstieg ins Online-Banking, durchgef&uuml;hrt werden.
-
-Diese Erweiterung stellt die Schnittstelle zu Komfortkasse zur Verf&uuml;gung. Informationen &uuml;ber offene Auftr&auml;ge werden zu Komfortkasse &uuml;bertragen und Updates zum Zahlungsstatus vom Komfortkasse empfangen. Es ist eine Anmeldung auf komfortkasse.eu erforderlich (kostenloses Paket verf&uuml;gbar). Ein eigenes Bankkonto ist nicht erforderlich, Sie k&ouml;nnen ein von Komfortkasse bereitgestelltes Sammelkonto verwenden.
 
 
 
@@ -67,3 +59,6 @@ Added Domain Path
 
 = 1.2.4 =
 Changed Text Domain
+
+= 1.2.5 =
+Removed non-English texts
