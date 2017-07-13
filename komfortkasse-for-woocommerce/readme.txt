@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 3.8
 Tested up to: 4.8
 License: CC BY-ND 4.0
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
