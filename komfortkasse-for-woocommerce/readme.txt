@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 3.8
 Tested up to: 4.6
 License: CC BY-ND 4.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -58,5 +58,8 @@ Recognizes invoice numbers from German Market plugin now
 
 = 1.2.0 = 
 Compatibility with WPML
+
+= 1.2.1 =
+Added text Domain
 
 
