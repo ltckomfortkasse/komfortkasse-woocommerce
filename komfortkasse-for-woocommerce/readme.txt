@@ -1,10 +1,10 @@
 === Komfortkasse for WooCommerce ===
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
-Requires at least: 3.8
+Requires at least: 4.4
 Tested up to: 4.8
 License: CC BY-ND 4.0
-Stable tag: 1.2.5
+Stable tag: 1.3.0
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -62,3 +62,7 @@ Changed Text Domain
 
 = 1.2.5 =
 Removed non-English texts
+
+= 1.3.0 =
+Added custom API endpoints. Requires WP 4.4+ and WC 2.6+. Added PDF and invoice functionality from woocommerce-pdf-invoices-packing-slips.
+
