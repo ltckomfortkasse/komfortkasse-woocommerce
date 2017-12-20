@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 4.8
 License: CC BY-ND 4.0
-Stable tag: 1.3.1
+Stable tag: 1.3.3
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -68,4 +68,9 @@ Added custom API endpoints. Requires WP 4.4+ and WC 2.6+. Added PDF and invoice 
 
 = 1.3.2 =
 Improved stability for wcpdf
+
+= 1.3.3 =
+Added instant order notification for on-hold orders
+
+
 

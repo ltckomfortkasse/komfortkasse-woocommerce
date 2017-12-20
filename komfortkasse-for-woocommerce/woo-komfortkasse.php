@@ -1,20 +1,24 @@
 <?php
 /*
  * Plugin Name: Komfortkasse for WooCommerce
+ * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: Komfortkasse Integration Team
- * Author URI: http://komfortkasse.eu
+ * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
  * License URI: http://creativecommons.org/licenses/by-sa/4.0/
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
+ * WC requires at least: 2.4
+ * WC tested up to: 3.2
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
     add_action('woocommerce_thankyou_order_id', 'notifyorder');
+    add_action('woocommerce_order_status_on-hold', 'notifyorderstatus');
     add_action('update_post_metadata', 'notifyinvoice', null, 5);
 
     // add custom endpoints for version number, invoice pdfs
@@ -34,7 +38,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.2';
+    $ret ['version'] = '1.3.3';
     return $ret;
 
 }
@@ -57,6 +61,16 @@ function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
 
 }
 
+function notifyorderstatus($id)
+{
+    $order = wc_get_order( $id );
+    if ($order) {
+        $paid = $order->get_date_paid();
+        if ($paid == null)
+            return notifyorder($id);
+    }
+    return $id;
+}
 
 function notifyorder($id)
 {
@@ -94,4 +108,3 @@ function getinvoicepdf($data)
     }
 
 }
-
