@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 4.9
 License: CC BY-ND 4.0
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -74,5 +74,9 @@ Added instant order notification for on-hold orders
 
 = 1.3.4 =
 WooCommerce 3.3 compatibility
+
+= 1.3.5 =
+Added instant order notification for processing orders
+
 
 
