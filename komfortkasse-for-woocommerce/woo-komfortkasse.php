@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.5
+ * Version: 1.3.7
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 3.4
+ * WC tested up to: 3.5
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -29,7 +29,11 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         ));
         register_rest_route('komfortkasse/v1', '/version', array ('methods' => 'GET','callback' => 'getversion'
         ));
+        register_rest_route('komfortkasse/v1', '/orderid/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderid'
+        ));
     });
+
+
 
     load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
     __('Komfortkasse', 'komfortkasse-for-woocommerce');
@@ -39,7 +43,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.5';
+    $ret ['version'] = '1.3.7';
     return $ret;
 
 }
@@ -62,16 +66,19 @@ function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
 
 }
 
+
 function notifyorderstatus($id)
 {
-    $order = wc_get_order( $id );
+    $order = wc_get_order($id);
     if ($order) {
         $paid = $order->get_date_paid();
         if ($paid == null)
             return notifyorder($id);
     }
     return $id;
+
 }
+
 
 function notifyorder($id)
 {
@@ -107,5 +114,27 @@ function getinvoicepdf($data)
             }
         }
     }
+
+}
+
+
+function getorderid($data)
+{
+    add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);
+    $orders = wc_get_orders(array ('_order_number' => $data ['number']
+    ));
+    return count($orders) < 1 ? '' : $orders [0]->get_id();
+
+}
+
+
+function handle_custom_query_var($query, $query_vars)
+{
+    if (!empty($query_vars ['_order_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_order_number','value' => esc_attr($query_vars ['_order_number'])
+        );
+    }
+
+    return $query;
 
 }

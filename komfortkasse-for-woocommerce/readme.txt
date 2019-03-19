@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 4.9
+Tested up to: 5.1
 License: CC BY-ND 4.0
-Stable tag: 1.3.5
+Stable tag: 1.3.7
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -78,5 +78,8 @@ WooCommerce 3.3 compatibility
 = 1.3.5 =
 Added instant order notification for processing orders
 
+= 1.3.6 =
+WP 5 / WC 3.5 compatibility
 
-
+= 1.3.7 =
+added endpoint for reading order id from order number
