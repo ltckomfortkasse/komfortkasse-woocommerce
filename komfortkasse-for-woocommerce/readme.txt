@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 5.1
 License: CC BY-ND 4.0
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -86,3 +86,7 @@ added endpoint for reading order id from order number
 
 = 1.3.8 =
 WooCommerce 3.6 compatibility
+
+= 1.3.9 =
+Improved Multisite support
+

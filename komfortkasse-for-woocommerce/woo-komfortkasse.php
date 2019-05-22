@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.8
+ * Version: 1.3.9
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -15,7 +15,17 @@
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
-if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+$woocommerce_active = false;
+if (is_multisite()) {
+    if (!function_exists('is_plugin_active_for_network')) {
+        require_once (ABSPATH . '/wp-admin/includes/plugin.php');
+    }
+    $woocommerce_active = is_plugin_active_for_network('woocommerce/woocommerce.php');
+}
+if (!$woocommerce_active)
+    $woocommerce_active = in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')));
+
+if ($woocommerce_active) {
 
     add_action('woocommerce_thankyou_order_id', 'notifyorder');
     add_action('woocommerce_order_status_on-hold', 'notifyorderstatus');
@@ -34,7 +44,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
     });
 
 
-
     load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
     __('Komfortkasse', 'komfortkasse-for-woocommerce');
 }
@@ -43,7 +52,7 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.8';
+    $ret ['version'] = '1.3.9';
     return $ret;
 
 }
@@ -100,7 +109,17 @@ function notifyorder($id)
 
 function getinvoicepdf($data)
 {
-    if (in_array('woocommerce-pdf-invoices-packing-slips/woocommerce-pdf-invoices-packingslips.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    $woopdf_active = false;
+    if (is_multisite()) {
+        if (!function_exists('is_plugin_active_for_network')) {
+            require_once (ABSPATH . '/wp-admin/includes/plugin.php');
+        }
+        $woopdf_active = is_plugin_active_for_network('woocommerce-pdf-invoices-packing-slips/woocommerce-pdf-invoices-packingslips.php');
+    }
+    if (!$woopdf_active)
+        $woopdf_active = in_array('woocommerce-pdf-invoices-packing-slips/woocommerce-pdf-invoices-packingslips.php', apply_filters('active_plugins', get_option('active_plugins')));
+
+    if ($woopdf_active) {
         if (class_exists('WPO\WC\PDF_Invoices\Compatibility\WC_Core') && function_exists('wcpdf_get_invoice')) {
             $orderid = $data ['id'];
             $order = WPO\WC\PDF_Invoices\Compatibility\WC_Core::get_order($orderid);
