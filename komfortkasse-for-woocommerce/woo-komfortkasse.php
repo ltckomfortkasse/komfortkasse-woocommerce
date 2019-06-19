@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.9
+ * Version: 1.3.10
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -52,7 +52,7 @@ if ($woocommerce_active) {
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.9';
+    $ret ['version'] = '1.3.10';
     return $ret;
 
 }
@@ -60,7 +60,7 @@ function getversion()
 
 function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
 {
-    if ($meta_key == '_wp_wc_running_invoice_number') {
+    if ($meta_key == '_wp_wc_running_invoice_number' || $meta_key == '_wcpdf_invoice_number') {
         $query = http_build_query(array ('id' => $object_id,'url' => site_url(),'invoice_number' => $meta_value
         ));
         $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
@@ -142,6 +142,9 @@ function getorderid($data)
     add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);
     $orders = wc_get_orders(array ('_order_number' => $data ['number']
     ));
+    if (count($orders) < 1)
+        $orders = wc_get_orders(array ('_order_number_formatted' => $data ['number']
+        ));
     return count($orders) < 1 ? '' : $orders [0]->get_id();
 
 }
@@ -151,6 +154,10 @@ function handle_custom_query_var($query, $query_vars)
 {
     if (!empty($query_vars ['_order_number'])) {
         $query ['meta_query'] [] = array ('key' => '_order_number','value' => esc_attr($query_vars ['_order_number'])
+        );
+    }
+    if (!empty($query_vars ['_order_number_formatted'])) {
+        $query ['meta_query'] [] = array ('key' => '_order_number_formatted','value' => esc_attr($query_vars ['_order_number_formatted'])
         );
     }
 
