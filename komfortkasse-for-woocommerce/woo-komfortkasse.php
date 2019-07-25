@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.10
+ * Version: 1.3.11
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -30,6 +30,7 @@ if ($woocommerce_active) {
     add_action('woocommerce_thankyou_order_id', 'notifyorder');
     add_action('woocommerce_order_status_on-hold', 'notifyorderstatus');
     add_action('woocommerce_order_status_processing', 'notifyorderstatus');
+    add_action('woocommerce_refund_created', 'notifyrefund');
     add_action('update_post_metadata', 'notifyinvoice', null, 5);
 
     // add custom endpoints for version number, invoice pdfs
@@ -88,6 +89,11 @@ function notifyorderstatus($id)
 
 }
 
+function notifyrefund($refund_id)
+{
+    $refund = wc_get_order($refund_id);
+    notifyorder($refund-> get_parent_id());
+}
 
 function notifyorder($id)
 {
