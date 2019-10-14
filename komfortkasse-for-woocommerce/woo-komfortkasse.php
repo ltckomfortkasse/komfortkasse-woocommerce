@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.11
+ * Version: 1.3.12
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 3.6
+ * WC tested up to: 3.7
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -53,7 +53,7 @@ if ($woocommerce_active) {
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.10';
+    $ret ['version'] = '1.3.12';
     return $ret;
 
 }
@@ -151,6 +151,10 @@ function getorderid($data)
     if (count($orders) < 1)
         $orders = wc_get_orders(array ('_order_number_formatted' => $data ['number']
         ));
+    if (count($orders) < 1)
+        $orders = wc_get_orders(array ('_alg_wc_custom_order_number' => $data ['number']
+        ));
+
     return count($orders) < 1 ? '' : $orders [0]->get_id();
 
 }
@@ -164,6 +168,10 @@ function handle_custom_query_var($query, $query_vars)
     }
     if (!empty($query_vars ['_order_number_formatted'])) {
         $query ['meta_query'] [] = array ('key' => '_order_number_formatted','value' => esc_attr($query_vars ['_order_number_formatted'])
+        );
+    }
+    if (!empty($query_vars ['_alg_wc_custom_order_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_alg_wc_custom_order_number','value' => esc_attr($query_vars ['_alg_wc_custom_order_number'])
         );
     }
 

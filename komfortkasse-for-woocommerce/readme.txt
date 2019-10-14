@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 5.2
 License: CC BY-ND 4.0
-Stable tag: 1.3.11
+Stable tag: 1.3.12
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -95,5 +95,8 @@ Improved support for custom order numbers
 
 = 1.3.11 =
 Added instant notification for refunds
+
+= 1.3.12 =
+Improved support for custom order numbers
 
 
