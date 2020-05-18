@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.12
+ * Version: 1.3.13
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,19 +11,23 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 3.7
+ * WC tested up to: 4.1
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
 $woocommerce_active = false;
+$germanized_active = false;
 if (is_multisite()) {
     if (!function_exists('is_plugin_active_for_network')) {
         require_once (ABSPATH . '/wp-admin/includes/plugin.php');
     }
     $woocommerce_active = is_plugin_active_for_network('woocommerce/woocommerce.php');
+    $germanized_active = is_plugin_active_for_network('woocommerce-germanized/woocommerce-germanized.php');
 }
 if (!$woocommerce_active)
     $woocommerce_active = in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')));
+if (!$germanized_active)
+    $germanized_active = in_array('woocommerce-germanized/woocommerce-germanized.php', apply_filters('active_plugins', get_option('active_plugins')));
 
 if ($woocommerce_active) {
 
@@ -44,16 +48,29 @@ if ($woocommerce_active) {
         ));
     });
 
+    // Save latest invoice number of an order as meta, see https://gist.github.com/vendidero/23de8d9baa10c4c01b4982650c54c334
+    if ($germanized_active) {
+        add_action( 'woocommerce_gzdp_before_invoice_refresh', 'germanized_store_latest_invoice_number', 10, 1 );
+    }
 
     load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
     __('Komfortkasse', 'komfortkasse-for-woocommerce');
 }
 
 
+function germanized_store_latest_invoice_number( $invoice ) {
+    if ( 'invoice' === $invoice->content_type && 'simple' === $invoice->type ) {
+        if ( $order = wc_get_order( $invoice->order ) ) {
+            update_post_meta( $order->get_id(), '_wc_gzdp_latest_invoice_number', $invoice->get_title() );
+        }
+    }
+}
+
+
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.12';
+    $ret ['version'] = '1.3.13';
     return $ret;
 
 }
@@ -89,11 +106,14 @@ function notifyorderstatus($id)
 
 }
 
+
 function notifyrefund($refund_id)
 {
     $refund = wc_get_order($refund_id);
-    notifyorder($refund-> get_parent_id());
+    notifyorder($refund->get_parent_id());
+
 }
+
 
 function notifyorder($id)
 {
