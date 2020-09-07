@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.13
+ * Version: 1.3.15
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 4.1
+ * WC tested up to: 4.4
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -40,11 +40,11 @@ if ($woocommerce_active) {
     // add custom endpoints for version number, invoice pdfs
     add_action('rest_api_init', function ()
     {
-        register_rest_route('komfortkasse/v1', '/invoicepdf/(?P<id>\d+)', array ('methods' => 'GET','callback' => 'getinvoicepdf'
+        register_rest_route('komfortkasse/v1', '/invoicepdf/(?P<id>\d+)', array ('methods' => 'GET','callback' => 'getinvoicepdf','permission_callback' => '__return_true'
         ));
-        register_rest_route('komfortkasse/v1', '/version', array ('methods' => 'GET','callback' => 'getversion'
+        register_rest_route('komfortkasse/v1', '/version', array ('methods' => 'GET','callback' => 'getversion','permission_callback' => '__return_true'
         ));
-        register_rest_route('komfortkasse/v1', '/orderid/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderid'
+        register_rest_route('komfortkasse/v1', '/orderid/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderid','permission_callback' => '__return_true'
         ));
     });
 
@@ -70,7 +70,7 @@ function germanized_store_latest_invoice_number( $invoice ) {
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.13';
+    $ret ['version'] = '1.3.15';
     return $ret;
 
 }

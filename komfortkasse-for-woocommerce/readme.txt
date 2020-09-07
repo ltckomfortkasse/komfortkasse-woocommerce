@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 5.4
+Tested up to: 5.5
 License: CC BY-ND 4.0
-Stable tag: 1.3.13
+Stable tag: 1.3.15
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -102,4 +102,8 @@ Improved support for custom order numbers
 = 1.3.13 =
 Support for invoice numbers from plugin Germanized
 
+= 1.3.14 =
+Improvements for Wordpress 5.5 (permission_callback)
 
+= 1.3.15 =
+Updated Tested up to tag 
