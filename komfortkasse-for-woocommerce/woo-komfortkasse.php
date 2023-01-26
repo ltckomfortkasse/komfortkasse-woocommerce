@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.3.18
+ * Version: 1.4.0
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 6.5
+ * WC tested up to: 7.3
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -46,11 +46,13 @@ if ($woocommerce_active) {
         ));
         register_rest_route('komfortkasse/v1', '/orderid/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderid','permission_callback' => '__return_true'
         ));
+        register_rest_route('komfortkasse/v1', '/orderidinvoice/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderidinvoice','permission_callback' => '__return_true'
+        ));
     });
 
     // Save latest invoice number of an order as meta, see https://gist.github.com/vendidero/23de8d9baa10c4c01b4982650c54c334
     if ($germanized_active) {
-        add_action( 'woocommerce_gzdp_before_invoice_refresh', 'germanized_store_latest_invoice_number', 10, 1 );
+        add_action('woocommerce_gzdp_before_invoice_refresh', 'germanized_store_latest_invoice_number', 10, 1);
     }
 
     load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
@@ -58,19 +60,21 @@ if ($woocommerce_active) {
 }
 
 
-function germanized_store_latest_invoice_number( $invoice ) {
-    if ( 'invoice' === $invoice->content_type && 'simple' === $invoice->type ) {
-        if ( $order = wc_get_order( $invoice->order ) ) {
-            update_post_meta( $order->get_id(), '_wc_gzdp_latest_invoice_number', $invoice->get_title() );
+function germanized_store_latest_invoice_number($invoice)
+{
+    if ('invoice' === $invoice->content_type && 'simple' === $invoice->type) {
+        if ($order = wc_get_order($invoice->order)) {
+            update_post_meta($order->get_id(), '_wc_gzdp_latest_invoice_number', $invoice->get_title());
         }
     }
+
 }
 
 
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.3.18';
+    $ret ['version'] = '1.4.0';
     return $ret;
 
 }
@@ -78,7 +82,7 @@ function getversion()
 
 function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
 {
-    if ($meta_key == '_wp_wc_running_invoice_number' || $meta_key == '_wcpdf_invoice_number') {
+    if ($meta_key == '_wp_wc_running_invoice_number' || $meta_key == '_wcpdf_invoice_number' || $meta_key == '_wc_gzdp_latest_invoice_number') {
         $query = http_build_query(array ('id' => $object_id,'url' => site_url(),'invoice_number' => $meta_value
         ));
         $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
@@ -172,9 +176,28 @@ function getorderid($data)
         $orders = wc_get_orders(array ('_order_number_formatted' => $data ['number']
         ));
     if (count($orders) < 1)
+        $orders = wc_get_orders(array ('_alg_wc_full_custom_order_number' => $data ['number']
+        ));
+    if (count($orders) < 1)
         $orders = wc_get_orders(array ('_alg_wc_custom_order_number' => $data ['number']
         ));
 
+    return count($orders) < 1 ? '' : $orders [0]->get_id();
+
+}
+
+
+function getorderidinvoice($data)
+{
+    add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);
+    $orders = wc_get_orders(array ('_wp_wc_running_invoice_number' => $data ['number']
+    ));
+    if (count($orders) < 1)
+        $orders = wc_get_orders(array ('_wcpdf_invoice_number' => $data ['number']
+        ));
+    if (count($orders) < 1)
+        $orders = wc_get_orders(array ('_wc_gzdp_latest_invoice_number' => $data ['number']
+        ));
     return count($orders) < 1 ? '' : $orders [0]->get_id();
 
 }
@@ -190,10 +213,27 @@ function handle_custom_query_var($query, $query_vars)
         $query ['meta_query'] [] = array ('key' => '_order_number_formatted','value' => esc_attr($query_vars ['_order_number_formatted'])
         );
     }
+    if (!empty($query_vars ['_alg_wc_full_custom_order_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_alg_wc_full_custom_order_number','value' => esc_attr($query_vars ['_alg_wc_full_custom_order_number'])
+        );
+    }
     if (!empty($query_vars ['_alg_wc_custom_order_number'])) {
         $query ['meta_query'] [] = array ('key' => '_alg_wc_custom_order_number','value' => esc_attr($query_vars ['_alg_wc_custom_order_number'])
         );
     }
+    if (!empty($query_vars ['_wp_wc_running_invoice_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_wp_wc_running_invoice_number','value' => esc_attr($query_vars ['_wp_wc_running_invoice_number'])
+        );
+    }
+    if (!empty($query_vars ['_wcpdf_invoice_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_wcpdf_invoice_number','value' => esc_attr($query_vars ['_wcpdf_invoice_number'])
+        );
+    }
+    if (!empty($query_vars ['_wc_gzdp_latest_invoice_number'])) {
+        $query ['meta_query'] [] = array ('key' => '_wc_gzdp_latest_invoice_number','value' => esc_attr($query_vars ['_wc_gzdp_latest_invoice_number'])
+        );
+    }
+
 
     return $query;
 

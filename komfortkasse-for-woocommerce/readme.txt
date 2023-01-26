@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 6.0
+Tested up to: 6.1
 License: CC BY-ND 4.0
-Stable tag: 1.3.18
+Stable tag: 1.4.0
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -16,12 +16,12 @@ Komfortkasse retrieves bank transfers from a bank account and automatically assi
 
 In addition, automatic payment reminders can be sent and refunds can be performed directly.
 
-This extension provides the interface for the Komfortkasse online service, transferring information about open orders to Komfortkasse and retrieveing payment status updates from Komfortkasse. Registration on komfortkasse.eu is required (free package available). You even don\'t need a bank account, you can use Komfortkasse\'s omnibus account. This plugin is designed for SEPA countries. It also works if your company is outside SEPA, but serving customers in that area.
+This extension provides the interface for the Komfortkasse online service, transferring information about open orders to Komfortkasse and retrieveing payment status updates from Komfortkasse. Registration on komfortkasse.eu is required (free trial available). You even don\'t need a bank account, you can use Komfortkasse\'s omnibus account. This plugin is designed for SEPA countries. It also works if your company is outside SEPA, but serving customers in that area.
 
 
 
 == Installation ==
-Installation Instructions: https://komfortkasse.eu/anleitungen/42-woocommerce#plugin
+Installation Instructions: https://komfortkasse.freshdesk.com/support/solutions/articles/14000136653
 
 
 
@@ -116,3 +116,6 @@ Updated WC tested up to, new screenshots
 
 = 1.3.18 =
 Updated Tested up to tag
+
+= 1.4.0 =
+Improvement for reading orders based in invoice numbers from WooCommerce
