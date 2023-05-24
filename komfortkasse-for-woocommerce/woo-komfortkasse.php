@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -48,6 +48,8 @@ if ($woocommerce_active) {
         ));
         register_rest_route('komfortkasse/v1', '/orderidinvoice/(?P<number>.+)', array ('methods' => 'GET','callback' => 'getorderidinvoice','permission_callback' => '__return_true'
         ));
+        register_rest_route('komfortkasse/v1', '/apitest', array ('methods' => 'GET','callback' => 'apitest','permission_callback' => '__return_true'
+        ));
     });
 
     // Save latest invoice number of an order as meta, see https://gist.github.com/vendidero/23de8d9baa10c4c01b4982650c54c334
@@ -74,9 +76,26 @@ function germanized_store_latest_invoice_number($invoice)
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.4.0';
+    $ret ['version'] = '1.4.1';
     return $ret;
 
+}
+
+function apitest()
+{
+    $query = http_build_query(array ('id' => 'apitest', 'url' => site_url()
+    ));
+
+    $contextData = array ('method' => 'POST','timeout' => 10,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+    );
+
+    $context = stream_context_create(array ('http' => $contextData
+    ));
+
+    
+    $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/test.jsf', false, $context);
+    
+    return $result === false ? error_get_last() : $result;
 }
 
 
