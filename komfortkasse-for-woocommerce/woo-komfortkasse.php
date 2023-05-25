@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 7.3
+ * WC tested up to: 7.7
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -76,44 +76,59 @@ function germanized_store_latest_invoice_number($invoice)
 function getversion()
 {
     $ret = array ();
-    $ret ['version'] = '1.4.1';
+    $ret ['version'] = '1.4.2';
     return $ret;
 
 }
 
 function apitest()
 {
-    $query = http_build_query(array ('id' => 'apitest', 'url' => site_url()
-    ));
+    $params = array ('id' => 'apitest', 'url' => site_url());
+    return notify('test', $params, 10);
+}
 
-    $contextData = array ('method' => 'POST','timeout' => 10,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-    );
-
-    $context = stream_context_create(array ('http' => $contextData
-    ));
-
+function notify($path, $params, $timeout=2)
+{
+    $query = http_build_query($params);
+    $url = 'http://api.komfortkasse.eu/api/shop/'.$path.'.jsf';
     
-    $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/test.jsf', false, $context);
-    
-    return $result === false ? error_get_last() : $result;
+    if (extension_loaded('curl')) {
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+        $result = @curl_exec($ch);
+        if ($result === false)
+            $result = curl_error($ch);
+        @curl_close ($ch);
+        
+    } else {
+        
+        $contextData = array ('method' => 'POST','timeout' => $timeout,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
+        );
+        $context = stream_context_create(array ('http' => $contextData
+        ));
+        $result = @file_get_contents($url, false, $context);
+        if ($result === false)
+            $result = error_get_last();
+    }
+
+    return $result;
 }
 
 
 function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
 {
     if ($meta_key == '_wp_wc_running_invoice_number' || $meta_key == '_wcpdf_invoice_number' || $meta_key == '_wc_gzdp_latest_invoice_number') {
-        $query = http_build_query(array ('id' => $object_id,'url' => site_url(),'invoice_number' => $meta_value
-        ));
-        $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-        );
-
-        $context = stream_context_create(array ('http' => $contextData
-        ));
-
-        $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/invoice.jsf', false, $context);
+        notify('invoice', array ('id' => $object_id,'url' => site_url(),'invoice_number' => $meta_value));
     }
     return $check;
-
 }
 
 
@@ -140,17 +155,7 @@ function notifyrefund($refund_id)
 
 function notifyorder($id)
 {
-    $query = http_build_query(array ('id' => $id,'url' => site_url()
-    ));
-
-    $contextData = array ('method' => 'POST','timeout' => 2,'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",'content' => $query
-    );
-
-    $context = stream_context_create(array ('http' => $contextData
-    ));
-
-    $result = @file_get_contents('http://api.komfortkasse.eu/api/shop/neworder.jsf', false, $context);
-
+    notify('neworder', array ('id' => $id,'url' => site_url()));
     return $id;
 
 }
