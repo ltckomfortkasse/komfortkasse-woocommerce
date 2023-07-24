@@ -2,7 +2,7 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 6.2
+Tested up to: 6.3
 License: CC BY-ND 4.0
 Stable tag: 1.4.3
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
