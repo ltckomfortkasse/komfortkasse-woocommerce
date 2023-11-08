@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.3
+ * Version: 1.4.4
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 7.7
+ * WC tested up to: 8.3
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -30,6 +30,12 @@ if (! $germanized_active)
     $germanized_active = in_array('woocommerce-germanized/woocommerce-germanized.php', apply_filters('active_plugins', get_option('active_plugins')));
 
 if ($woocommerce_active) {
+
+    add_action( 'before_woocommerce_init', function() {
+        if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+            \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+        }
+    } );
 
     add_action('woocommerce_thankyou_order_id', 'notifyorder');
     add_action('woocommerce_order_status_on-hold', 'notifyorderstatus');
@@ -79,7 +85,8 @@ function germanized_store_latest_invoice_number($invoice)
 {
     if ('invoice' === $invoice->content_type && 'simple' === $invoice->type) {
         if ($order = wc_get_order($invoice->order)) {
-            update_post_meta($order->get_id(), '_wc_gzdp_latest_invoice_number', $invoice->get_title());
+            $order->update_meta_data('_wc_gzdp_latest_invoice_number', $invoice->get_title());
+            $order->save();
         }
     }
 }
@@ -87,7 +94,7 @@ function germanized_store_latest_invoice_number($invoice)
 function getversion()
 {
     $ret = array();
-    $ret['version'] = '1.4.3';
+    $ret['version'] = '1.4.4';
     return $ret;
 }
 
@@ -291,4 +298,3 @@ function handle_custom_query_var($query, $query_vars)
 
     return $query;
 }
-        
