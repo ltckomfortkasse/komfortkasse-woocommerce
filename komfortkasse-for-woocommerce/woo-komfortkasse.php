@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.4
+ * Version: 1.4.5
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 8.3
+ * WC tested up to: 8.4
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -94,7 +94,7 @@ if (! $woocommerce_active)
         function getversion()
         {
             $ret = array();
-            $ret['version'] = '1.4.4';
+            $ret['version'] = '1.4.5';
             return $ret;
         }
 
@@ -186,6 +186,9 @@ if (! $woocommerce_active)
 
         function getinvoicepdf($data)
         {
+            $ret = array();
+            $ret['status'] = false;
+
             $woopdf_active = false;
             if (is_multisite()) {
                 if (! function_exists('is_plugin_active_for_network')) {
@@ -196,20 +199,21 @@ if (! $woocommerce_active)
             if (! $woopdf_active)
                 $woopdf_active = in_array('woocommerce-pdf-invoices-packing-slips/woocommerce-pdf-invoices-packingslips.php', apply_filters('active_plugins', get_option('active_plugins')));
 
-                if ($woopdf_active) {
-                    if (class_exists('WPO\WC\PDF_Invoices\Compatibility\WC_Core') && function_exists('wcpdf_get_invoice')) {
-                        $orderid = $data['id'];
-                        $order = WPO\WC\PDF_Invoices\Compatibility\WC_Core::get_order($orderid);
-                        if ($invoice = wcpdf_get_invoice($order)) {
-                            if ($invoice->get_number()) {
-                                $ret = array();
-                                $ret['invoice_number'] = $invoice->get_number()->formatted_number;
-                                $ret['pdf_base64'] = base64_encode($invoice->get_pdf());
-                                return $ret;
-                            }
+
+            if ($woopdf_active) {
+                if (class_exists('WPO\WC\PDF_Invoices\Compatibility\WC_Core') && function_exists('wcpdf_get_invoice')) {
+                    $ret['status'] = true;
+                    $orderid = $data['id'];
+                    $order = WPO\WC\PDF_Invoices\Compatibility\WC_Core::get_order($orderid);
+                    if ($invoice = wcpdf_get_invoice($order)) {
+                        if ($invoice->get_number()) {
+                            $ret['invoice_number'] = $invoice->get_number()->formatted_number;
+                            $ret['pdf_base64'] = base64_encode($invoice->get_pdf());
                         }
                     }
                 }
+            }
+            return $ret;
         }
 
         function getorderid($data)

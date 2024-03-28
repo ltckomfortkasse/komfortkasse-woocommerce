@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 6.4
 License: CC BY-ND 4.0
-Stable tag: 1.4.4
+Stable tag: 1.4.5
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -132,3 +132,5 @@ Updated Tested up to tag
 = 1.4.4 =
 Supporting High Performance Order Storage (HPOS)
 
+= 1.4.5 =
+Performance improvement for reading invoice pdfs 
