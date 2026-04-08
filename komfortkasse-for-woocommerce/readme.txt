@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 6.4
+Tested up to: 6.7
 License: CC BY-ND 4.0
-Stable tag: 1.4.5
+Stable tag: 1.4.6
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -134,3 +134,6 @@ Supporting High Performance Order Storage (HPOS)
 
 = 1.4.5 =
 Performance improvement for reading invoice pdfs 
+
+= 1.4.6 =
+WordPress 6.7 compatibility

@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.5
+ * Version: 1.4.6
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 8.4
+ * WC tested up to: 9.6
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -42,6 +42,7 @@ if (! $woocommerce_active)
                 add_action('woocommerce_order_status_processing', 'notifyorderstatus');
                 add_action('woocommerce_refund_created', 'notifyrefund');
                 add_action('update_post_metadata', 'notifyinvoice', null, 5);
+                add_action('init', 'load_i18n');
 
                 // add custom endpoints for version number, invoice pdfs
                 add_action('rest_api_init', function () {
@@ -72,13 +73,16 @@ if (! $woocommerce_active)
                     ));
                 });
 
-                    // Save latest invoice number of an order as meta, see https://gist.github.com/vendidero/23de8d9baa10c4c01b4982650c54c334
-                    if ($germanized_active) {
-                        add_action('woocommerce_gzdp_before_invoice_refresh', 'germanized_store_latest_invoice_number', 10, 1);
-                    }
+                // Save latest invoice number of an order as meta, see https://gist.github.com/vendidero/23de8d9baa10c4c01b4982650c54c334
+                if ($germanized_active) {
+                    add_action('woocommerce_gzdp_before_invoice_refresh', 'germanized_store_latest_invoice_number', 10, 1);
+                }
 
-                    load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
-                    __('Komfortkasse', 'komfortkasse-for-woocommerce');
+        }
+
+        function load_i18n() {
+            load_plugin_textdomain('woo-komfortkasse', false, dirname(plugin_basename(__FILE__)) . '/langs/');
+            __('Komfortkasse', 'komfortkasse-for-woocommerce');
         }
 
         function germanized_store_latest_invoice_number($invoice)
@@ -126,7 +130,7 @@ if (! $woocommerce_active)
                 $result = @curl_exec($ch);
                 if ($result === false)
                     $result = curl_error($ch);
-                    @curl_close($ch);
+                @curl_close($ch);
             } else {
 
                 $contextData = array(
