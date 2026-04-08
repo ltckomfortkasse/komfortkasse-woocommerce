@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 6.7
+Tested up to: 6.9
 License: CC BY-ND 4.0
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -137,3 +137,6 @@ Performance improvement for reading invoice pdfs
 
 = 1.4.6 =
 WordPress 6.7 compatibility
+
+= 1.4.7 =
+Fix REST API 401 error on installations with security plugins blocking unauthenticated REST access

@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.6
+ * Version: 1.4.7
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 9.6
+ * WC tested up to: 10.6
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -43,6 +43,7 @@ if (! $woocommerce_active)
                 add_action('woocommerce_refund_created', 'notifyrefund');
                 add_action('update_post_metadata', 'notifyinvoice', null, 5);
                 add_action('init', 'load_i18n');
+                add_filter('rest_authentication_errors', 'komfortkasse_allow_rest_access', 9999);
 
                 // add custom endpoints for version number, invoice pdfs
                 add_action('rest_api_init', function () {
@@ -85,6 +86,19 @@ if (! $woocommerce_active)
             __('Komfortkasse', 'komfortkasse-for-woocommerce');
         }
 
+        // Allow unauthenticated access to Komfortkasse REST endpoints.
+        // Security plugins (Wordfence, iThemes Security, Sucuri, All In One WP Security, Disable REST API, etc.)
+        // and custom code in functions.php may hook into 'rest_authentication_errors' to block all
+        // unauthenticated REST API access. This filter fires BEFORE the route's permission_callback,
+        // so '__return_true' alone is not sufficient. Priority 9999 ensures this runs after those plugins.
+        function komfortkasse_allow_rest_access($errors) {
+            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            if (strpos($request_uri, '/komfortkasse/') !== false) {
+                return true;
+            }
+            return $errors;
+        }
+
         function germanized_store_latest_invoice_number($invoice)
         {
             if ('invoice' === $invoice->content_type && 'simple' === $invoice->type) {
@@ -98,7 +112,7 @@ if (! $woocommerce_active)
         function getversion()
         {
             $ret = array();
-            $ret['version'] = '1.4.5';
+            $ret['version'] = '1.4.7';
             return $ret;
         }
 
