@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 7.0
+Tested up to: 7.1
 License: CC BY-ND 4.0
-Stable tag: 1.4.9
+Stable tag: 1.5.0
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -146,4 +146,9 @@ WordPress 7.0 compatibility
 
 = 1.4.9 =
 Security fix: REST authentication filter no longer overrides WordPress nonce verification (CSRF). Only the plugin's own read-only routes are allowed. Thanks to Enrico Marcolini, Claudio Marchesini and Dottor Marc (reported via WPScan).
+
+= 1.5.0 =
+Security: invoice PDF, order lookup and API test endpoints now require WooCommerce REST API authentication. Komfortkasse sends the API key of your shop automatically, no action required.
+Invoice PDFs work again with current versions of PDF Invoices & Packing Slips for WooCommerce (older versions remain supported).
+WordPress 7.1 and WooCommerce 11.2 compatibility
 
