@@ -2,9 +2,9 @@
 Contributors: komfortkasse
 Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocommerce payment,woocommerce payment gateway,komfortkasse
 Requires at least: 4.4
-Tested up to: 6.9
+Tested up to: 7.0
 License: CC BY-ND 4.0
-Stable tag: 1.4.7
+Stable tag: 1.4.9
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -140,3 +140,10 @@ WordPress 6.7 compatibility
 
 = 1.4.7 =
 Fix REST API 401 error on installations with security plugins blocking unauthenticated REST access
+
+= 1.4.8 =
+WordPress 7.0 compatibility
+
+= 1.4.9 =
+Security fix: REST authentication filter no longer overrides WordPress nonce verification (CSRF). Only the plugin's own read-only routes are allowed. Thanks to Enrico Marcolini, Claudio Marchesini and Dottor Marc (reported via WPScan).
+

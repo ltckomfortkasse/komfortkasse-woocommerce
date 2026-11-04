@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.4.7
+ * Version: 1.4.9
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -11,7 +11,7 @@
  * Text Domain: komfortkasse-for-woocommerce
  * Domain Path: /langs
  * WC requires at least: 2.4
- * WC tested up to: 10.6
+ * WC tested up to: 10.7
  */
 defined('ABSPATH') or die('Komfortkasse Plugin');
 
@@ -91,12 +91,35 @@ if (! $woocommerce_active)
         // and custom code in functions.php may hook into 'rest_authentication_errors' to block all
         // unauthenticated REST API access. This filter fires BEFORE the route's permission_callback,
         // so '__return_true' alone is not sufficient. Priority 9999 ensures this runs after those plugins.
+        //
+        // Only errors on requests to the plugin's own (read-only) routes are lifted, identified by the
+        // resolved REST route. WordPress's cookie/nonce check is never overridden, so requests to other
+        // routes and CSRF attempts keep their error.
         function komfortkasse_allow_rest_access($errors) {
-            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-            if (strpos($request_uri, '/komfortkasse/') !== false) {
-                return true;
+            if (! is_wp_error($errors)) {
+                return $errors;
             }
-            return $errors;
+            if (in_array('rest_cookie_invalid_nonce', $errors->get_error_codes(), true)) {
+                return $errors;
+            }
+            if (! komfortkasse_is_own_rest_route()) {
+                return $errors;
+            }
+            // The plugin's routes need no user; never serve them in a logged-in context.
+            wp_set_current_user(0);
+            return true;
+        }
+
+        function komfortkasse_is_own_rest_route() {
+            if (! isset($GLOBALS['wp']) || ! is_object($GLOBALS['wp']) || empty($GLOBALS['wp']->query_vars['rest_route'])) {
+                return false;
+            }
+            $route = $GLOBALS['wp']->query_vars['rest_route'];
+            if (! is_string($route)) {
+                return false;
+            }
+            $route = '/' . ltrim(untrailingslashit($route), '/');
+            return preg_match('#^/komfortkasse/v1/(invoicepdf/\d+|version|orderid/.+|orderidinvoice/.+|apitest)$#iD', $route) === 1;
         }
 
         function germanized_store_latest_invoice_number($invoice)
@@ -112,7 +135,7 @@ if (! $woocommerce_active)
         function getversion()
         {
             $ret = array();
-            $ret['version'] = '1.4.7';
+            $ret['version'] = '1.4.9';
             return $ret;
         }
 
