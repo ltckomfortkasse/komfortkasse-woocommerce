@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 7.1
 License: CC BY-ND 4.0
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -151,4 +151,7 @@ Security fix: REST authentication filter no longer overrides WordPress nonce ver
 Security: invoice PDF, order lookup and API test endpoints now require WooCommerce REST API authentication. Komfortkasse sends the API key of your shop automatically, no action required.
 Invoice PDFs work again with current versions of PDF Invoices & Packing Slips for WooCommerce (older versions remain supported).
 WordPress 7.1 and WooCommerce 11.2 compatibility
+
+= 1.5.1 =
+Fixed: with High-Performance Order Storage (HPOS) enabled, the order lookup by order or invoice number ignored the number and returned the latest order. Thanks to the WPML compatibility team.
 
