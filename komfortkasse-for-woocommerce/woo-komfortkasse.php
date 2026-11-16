@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.5.1
+ * Version: 1.5.2
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -169,7 +169,7 @@ if (! $woocommerce_active)
         function getversion()
         {
             $ret = array();
-            $ret['version'] = '1.5.1';
+            $ret['version'] = '1.5.2';
             return $ret;
         }
 
@@ -314,25 +314,30 @@ if (! $woocommerce_active)
         }
 
         // Returns the id of the order whose meta $key equals $number (first key that matches wins), or '' if none.
-        // The meta_query is used by HPOS, the custom query var by the legacy post storage (see handle_custom_query_var).
-        // Every result is checked against its meta, so a storage that ignores the condition never returns a wrong order.
+        // HPOS gets a meta_query, the legacy post storage the custom query var (see handle_custom_query_var); the post storage
+        // rejects meta_query with a notice since WC 9.2. Every result is checked against its meta, so a storage that ignores
+        // the condition never returns a wrong order.
         function komfortkasse_find_order_id($keys, $number)
         {
             $number = trim((string) $number);
             if ($number === '')
                 return '';
 
+            $hpos = class_exists('\Automattic\WooCommerce\Utilities\OrderUtil')
+                    && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
             add_filter('woocommerce_order_data_store_cpt_get_orders_query', 'handle_custom_query_var', 10, 2);
             foreach ($keys as $key) {
-                $orders = wc_get_orders(array(
-                        $key => $number,
-                        'meta_query' => array(
-                                array(
-                                        'key' => $key,
-                                        'value' => $number
-                                )
-                        )
-                ));
+                $args = array(
+                        $key => $number
+                );
+                if ($hpos)
+                    $args['meta_query'] = array(
+                            array(
+                                    'key' => $key,
+                                    'value' => $number
+                            )
+                    );
+                $orders = wc_get_orders($args);
                 foreach ($orders as $order) {
                     if (strcasecmp(trim((string) $order->get_meta($key)), $number) === 0)
                         return $order->get_id();

@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 7.1
 License: CC BY-ND 4.0
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -154,4 +154,7 @@ WordPress 7.1 and WooCommerce 11.2 compatibility
 
 = 1.5.1 =
 Fixed: with High-Performance Order Storage (HPOS) enabled, the order lookup by order or invoice number ignored the number and returned the latest order. Thanks to the WPML compatibility team.
+
+= 1.5.2 =
+Fixed: the order lookup triggered a "meta_query is not supported" notice in shops without HPOS.
 
