@@ -3,7 +3,7 @@
  * Plugin Name: Komfortkasse for WooCommerce
  * Plugin URI: https://komfortkasse.eu/woocommerce
  * Description: Automatic assignment of bank wire transfers | Automatischer Zahlungsabgleich f&uuml;r Zahlungen per &Uuml;berweisung
- * Version: 1.5.2
+ * Version: 1.5.3
  * Author: Komfortkasse Integration Team
  * Author URI: https://komfortkasse.eu
  * License: CC BY-SA 4.0
@@ -169,7 +169,7 @@ if (! $woocommerce_active)
         function getversion()
         {
             $ret = array();
-            $ret['version'] = '1.5.2';
+            $ret['version'] = '1.5.3';
             return $ret;
         }
 
@@ -182,43 +182,22 @@ if (! $woocommerce_active)
             return notify('test', $params, 10);
         }
 
+        // Notify Komfortkasse (new order, invoice number, API test). Uses the WordPress HTTP API over TLS only:
+        // the certificate is verified (against the CA bundle shipped with WordPress) and redirects are not
+        // followed, so the request is never sent anywhere else. There is no fallback to plain HTTP; if the
+        // request fails, Komfortkasse still picks the order up on its regular sync.
         function notify($path, $params, $timeout = 2)
         {
-            $query = http_build_query($params);
-            $url = 'http://api.komfortkasse.eu/api/shop/' . $path . '.jsf';
+            $response = wp_remote_post('https://ssl.komfortkasse.eu/api/shop/' . $path . '.jsf', array(
+                    'body' => $params,
+                    'timeout' => $timeout,
+                    'redirection' => 0,
+                    'sslverify' => true
+            ));
+            if (is_wp_error($response))
+                return $response->get_error_message();
 
-            if (extension_loaded('curl')) {
-
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-                curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
-                $result = @curl_exec($ch);
-                if ($result === false)
-                    $result = curl_error($ch);
-                @curl_close($ch);
-            } else {
-
-                $contextData = array(
-                        'method' => 'POST',
-                        'timeout' => $timeout,
-                        'header' => "Connection: close\r\n" . 'Content-Length: ' . strlen($query) . "\r\n",
-                        'content' => $query
-                );
-                $context = stream_context_create(array(
-                        'http' => $contextData
-                ));
-                $result = @file_get_contents($url, false, $context);
-                if ($result === false)
-                    $result = error_get_last();
-            }
-
-            return $result;
+            return wp_remote_retrieve_body($response);
         }
 
         function notifyinvoice($check, $object_id, $meta_key, $meta_value, $prev_value)
@@ -247,7 +226,8 @@ if (! $woocommerce_active)
         function notifyrefund($refund_id)
         {
             $refund = wc_get_order($refund_id);
-            notifyorder($refund->get_parent_id());
+            if ($refund)
+                notifyorder($refund->get_parent_id());
         }
 
         function notifyorder($id)

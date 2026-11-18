@@ -4,7 +4,7 @@ Tags: payment,bacs,banktransfer,sepa,prepayment,cod,invoice,woocommerce, woocomm
 Requires at least: 4.4
 Tested up to: 7.1
 License: CC BY-ND 4.0
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License URI: http://creativecommons.org/licenses/by-nd/4.0/
 
 
@@ -157,4 +157,7 @@ Fixed: with High-Performance Order Storage (HPOS) enabled, the order lookup by o
 
 = 1.5.2 =
 Fixed: the order lookup triggered a "meta_query is not supported" notice in shops without HPOS.
+
+= 1.5.3 =
+Security: notifications to Komfortkasse (new orders, invoice numbers, API test) are sent over HTTPS only, using the WordPress HTTP API with certificate verification and without following redirects.
 
